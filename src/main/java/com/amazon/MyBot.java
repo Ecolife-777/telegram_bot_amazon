@@ -101,7 +101,8 @@ public class MyBot extends TelegramLongPollingBot {
                             "Siz ish bozor botga muvaffaqiyatli a'zo bo'ldingiz " +
                             "Mazkur bot orqali siz O'zbekiston bo'ylab ish berish yoki ish izlash imkoniyatiga ega bo'lasiz.  " +
                             "O'ylaymizki sizning ezgu maqsadlaringiz uchun mazkur bot samarali yordamchingizga aylanadi." +
-                            "" +
+                            "Diqqat: bot orqali ish beruvchi va ish oluvchilar o'rtasida qanaqadir muommolar " +
+                            "kelib chiqsa biz javobgarlikli o'z zimmamizga olmaymiz." +
                             " https://t.me/ishbozori_kanali");
                 }
                 else if (message.equals("Boshlash")) {
