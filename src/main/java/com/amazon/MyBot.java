@@ -98,7 +98,8 @@ public class MyBot extends TelegramLongPollingBot {
                 }
                 else if (message.equals("Bot qanday ishlaydi")) {
                     sendMessage.setText("Assalomu alaykum siz bu bot orqali o'zingizga mos ish topishingiz yoki " +
-                            "ish bilan taminlashingiz mumkin, Umumiy qoida siz barcha kategoriyalarni to'g'ri " +
+                            "ish bilan taminlashingiz mumkin, Umumiy qoida: Siz telefon raqamingiz va ismingizni " +
+                            "aniq kiritishingiz va qolgan barcha kategoriyalarni ham to'g'ri " +
                             "to'ldirishingiz lozim, Biz sizga yordam berishda davom etamiz!");
                 }
                 else if (message.equals("Boshlash")) {
