@@ -67,7 +67,8 @@ public class MyBot extends TelegramLongPollingBot {
                 String message = update.getMessage().getText();
                 if (message.equals("/start")) {
                     sendMessage.setReplyMarkup(startingBot());
-                    sendMessage.setText("Assalomu alaykum, xush kelibsiz!");
+                    sendMessage.setText("Assalomu alaykum, xush kelibsiz! ✅ " +
+                            "\n\uD83E\uDDFE botni boshlashdan oldin bot bilan tanishib chiqishingizni so'raymiz. ");
                 }
                 else if (message.equals("Menu")) {
                     sendMessage.setReplyMarkup(adminMenu());
@@ -101,10 +102,10 @@ public class MyBot extends TelegramLongPollingBot {
                             "Siz ish bozor botga muvaffaqiyatli a'zo bo'ldingiz " +
                             "Mazkur bot orqali siz O'zbekiston bo'ylab ish berish yoki ish izlash imkoniyatiga ega bo'lasiz.  " +
                             "O'ylaymizki sizning ezgu maqsadlaringiz uchun mazkur bot samarali yordamchingizga aylanadi. ☑️" +
-                            "\n\n Botdan foydalanishdan oldin quyidagilar bilib oling. ☝️" +
-                            "\n\n\uD83E\uDD1D Diqqat: bot orqali ish beruvchi va ish oluvchilar o'rtasida qanaqadir muommolar " +
-                            "kelib chiqsa biz javobgarlikli o'z zimmamizga olmaymiz. ❗️❗️❗️ " +
-                            "\n\nBarcha talablarga rozi bo'lsangiz botdan foydalanishingiz mumkin. ✅✅ " +
+                            "\n\nBotdan foydalanishdan oldin quyidagilar bilib oling. ☝️" +
+                            "\n\n\uD83D\uDDE3 Diqqat: ️bot orqali ish beruvchi va ish oluvchilar o'rtasida  muommolar " +
+                            "kelib chiqsa biz javobgarlikni o'z zimmamizga olmaymiz. ❗️❗️❗️ " +
+                            "\n\nBarcha talablarga rozi bo'lsangiz botdan foydalanishingiz mumkin. ✅ " +
                             " \n\n https://t.me/ishbozori_kanali");
                 }
                 else if (message.equals("Boshlash")) {
