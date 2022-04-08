@@ -21,6 +21,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.Channel;
+import java.nio.channels.Channels;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -99,9 +101,9 @@ public class MyBot extends TelegramLongPollingBot {
                 }
                 else if (message.equals("Bot qanday ishlaydi")) {
                     sendMessage.setText("Assalomu alaykum.  " +
-                            "Siz ish bozor botga muvaffaqiyatli a'zo bo'ldingiz " +
+                            "Siz ish bozori botga muvaffaqiyatli a'zo bo'ldingiz. " +
                             "Mazkur bot orqali siz O'zbekiston bo'ylab ish berish yoki ish izlash imkoniyatiga ega bo'lasiz.  " +
-                            "O'ylaymizki sizning ezgu maqsadlaringiz uchun mazkur bot samarali yordamchingizga aylanadi. ☑️" +
+                            "O'ylaymizki sizning ezgu maqsadlaringiz uchun mazkur bot samarali yordamchingizga aylanadi. ✅️" +
                             "\n\nBotdan foydalanishdan oldin quyidagilar bilib oling. ☝️" +
                             "\n\n\uD83D\uDDE3 Diqqat: ️bot orqali ish beruvchi va ish oluvchilar o'rtasida  muommolar " +
                             "kelib chiqsa biz javobgarlikni o'z zimmamizga olmaymiz. ❗️❗️❗️ " +
@@ -307,7 +309,8 @@ public class MyBot extends TelegramLongPollingBot {
                         sendMessage.setText("Noto'g'ri formatdagi raqam kiritdingiz, iltimos qaytadan kiriting: ");
                     }
                 }
-            } else {
+            }
+            else {
                 if (adPhoto.size() != 0 && adPhoto.get(chatId).getDescription() != null) {
                     Ads ads = adPhoto.get(chatId);
                     ads.setFileId(update.getMessage().getPhoto().get(0).getFileId());
@@ -319,7 +322,8 @@ public class MyBot extends TelegramLongPollingBot {
                 }
             }
             execute(sendMessage);
-        } else if (update.hasCallbackQuery()) {
+        }
+        else if (update.hasCallbackQuery()) {
             String call_data = update.getCallbackQuery().getData();
             long message_id = update.getCallbackQuery().getMessage().getMessageId();
             long chat_id = update.getCallbackQuery().getMessage().getChatId();
@@ -337,6 +341,10 @@ public class MyBot extends TelegramLongPollingBot {
             else if (call_data.equals("Ortga")) {
                 new_message.setText("Viloyatni tanlang:");
                 new_message.setReplyMarkup(getRegions(resources));
+            }
+            else if (call_data.equals("Orqaga")) {
+                new_message.setText("O'zingizga mos ishni tanlang: ");
+                new_message.setReplyMarkup(getWorkTypes(resources));
             }
             else if (call_data.equals("Ish izlayapman")) {
                 User user = userMap.get(String.valueOf(chat_id));
@@ -825,6 +833,7 @@ public class MyBot extends TelegramLongPollingBot {
         List<List<InlineKeyboardButton>> inlineKeyboardButtons = new ArrayList<>();
 
         List<InlineKeyboardButton> keyboardButtons = new ArrayList<>();
+        List<InlineKeyboardButton> keyboardButtons1 = new ArrayList<>();
 
         InlineKeyboardButton keyboardButton = new InlineKeyboardButton();
         keyboardButton.setText("Vaqtincha");
@@ -834,10 +843,17 @@ public class MyBot extends TelegramLongPollingBot {
         keyboardButton1.setText("Doimiy");
         keyboardButton1.setCallbackData("Doimiy");
 
+        InlineKeyboardButton keyboardButton2 = new InlineKeyboardButton();
+        keyboardButton2.setText("Orqaga");
+        keyboardButton2.setCallbackData("Orqaga");
+
+        keyboardButtons1.add(keyboardButton2);
+
         keyboardButtons.add(keyboardButton);
         keyboardButtons.add(keyboardButton1);
 
         inlineKeyboardButtons.add(keyboardButtons);
+        inlineKeyboardButtons.add(keyboardButtons1);
 
         inlineKeyboardMarkup.setKeyboard(inlineKeyboardButtons);
         return inlineKeyboardMarkup;
@@ -907,80 +923,6 @@ public class MyBot extends TelegramLongPollingBot {
                 keyboardButtons = new ArrayList<>();
             }
         }
-//        for (int i = 0; i < resources.workList.size(); i++) {
-//            InlineKeyboardButton keyboardButton = new InlineKeyboardButton();
-//            switch (resources.workList.get(i)) {
-//                case "Oshpaz":
-//                    keyboardButton.setText(resources.workList.get(i) + " \uD83D\uDC68\uD83C\uDFFB\u200D\uD83C\uDF73");
-//                    break;
-//                case "IT muhandisi":
-//                    keyboardButton.setText(resources.workList.get(i) + " \uD83D\uDC68\uD83C\uDFFB\u200D\uD83D\uDCBB");
-//                    break;
-//                case "Tarjimon":
-//                    keyboardButton.setText(resources.workList.get(i) + " \uD83D\uDC69\uD83C\uDFFC\u200D\uD83C\uDFEB");
-//                    break;
-//                case "Quruvchi":
-//                    keyboardButton.setText(resources.workList.get(i) + " \uD83D\uDC77\uD83C\uDFFC");
-//                    break;
-//                case "Texnikalar ustasi":
-//                    keyboardButton.setText(resources.workList.get(i) + " \uD83D\uDEE0");
-//                    break;
-//                case "Uy ishlari":
-//                    keyboardButton.setText(resources.workList.get(i) + " \uD83E\uDDF9");
-//                    break;
-//                case "Sartarosh":
-//                    keyboardButton.setText(resources.workList.get(i) + " ✂️");
-//                    break;
-//                case "Shifokor":
-//                    keyboardButton.setText(resources.workList.get(i) + "  \uD83E\uDE7A");
-//                    break;
-//                case "Farmasevt":
-//                    keyboardButton.setText(resources.workList.get(i) + " \uD83E\uDDD1\uD83C\uDFFC\u200D\uD83D\uDD2C");
-//                    break;
-//                case "Ofitsant":
-//                    keyboardButton.setText(resources.workList.get(i) + "  \uD83C\uDF7D");
-//                    break;
-//                case "Tikuvchi":
-//                    keyboardButton.setText(resources.workList.get(i) + "  \uD83D\uDC88");
-//                    break;
-//                case "Qoravul":
-//                    keyboardButton.setText(resources.workList.get(i) + "  \uD83D\uDC6E\uD83C\uDFFB\u200D♂️");
-//                    break;
-//                case "Sotuvchi":
-//                    keyboardButton.setText(resources.workList.get(i) + "  ⚖️");
-//                    break;
-//                case "Buxgalter":
-//                    keyboardButton.setText(resources.workList.get(i) + "  \uD83D\uDCB5");
-//                    break;
-//                case "Dala ishlari":
-//                    keyboardButton.setText(resources.workList.get(i) + "  \uD83C\uDF3D");
-//                    break;
-//                case "Menejer":
-//                    keyboardButton.setText(resources.workList.get(i) + "  \uD83D\uDCBC");
-//                    break;
-//                case "Arxitektor":
-//                    keyboardButton.setText(resources.workList.get(i) + " \uD83D\uDCC9");
-//                    break;
-//                case "Mardikor":
-//                    keyboardButton.setText(resources.workList.get(i) + "  Ⓜ️");
-//                    break;
-//                case "Agranom":
-//                    keyboardButton.setText(resources.workList.get(i) + "  \uD83D\uDCBE");
-//                    break;
-//                case "Va boshqalar":
-//                    keyboardButton.setText(resources.workList.get(i) + "  \uD83D\uDDE3");
-//                    break;
-//                default:
-//                    keyboardButton.setText(resources.workList.get(i));
-//                    break;
-//            }
-//            keyboardButton.setCallbackData(resources.workList.get(i));
-//            keyboardButtons.add(keyboardButton);
-//            if ((i + 1) % 2 == 0) {
-//                inlineKeyboardButtons.add(keyboardButtons);
-//                keyboardButtons = new ArrayList<>();
-//            }
-//        }
         inlineKeyboardButtons.add(keyboardButtons);
         inlineKeyboardMarkup.setKeyboard(inlineKeyboardButtons);
         return inlineKeyboardMarkup;
