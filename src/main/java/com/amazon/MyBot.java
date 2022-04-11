@@ -14,7 +14,9 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -105,7 +107,7 @@ public class MyBot extends TelegramLongPollingBot {
                             "Mazkur bot orqali siz O'zbekiston bo'ylab ish berish yoki ish izlash imkoniyatiga ega bo'lasiz.  " +
                             "O'ylaymizki sizning ezgu maqsadlaringiz uchun mazkur bot samarali yordamchingizga aylanadi. ✅️" +
                             "\n\nBotdan foydalanishdan oldin quyidagilar bilib oling. ☝️" +
-                            "\n\n\uD83D\uDDE3 Diqqat: ️bot orqali ish beruvchi va ish oluvchilar o'rtasida  muommolar " +
+                            "\n\n\uD83D\uDDE3 Diqqat: ️bot orqali ish beruvchi va ish oluvchilar o'rtasida  muammolar " +
                             "kelib chiqsa biz javobgarlikni o'z zimmamizga olmaymiz. ❗️❗️❗️ " +
                             "\n\nBarcha talablarga rozi bo'lsangiz botdan foydalanishingiz mumkin. ✅ " +
                             " \n\n https://t.me/ishbozori_kanali");
@@ -118,54 +120,9 @@ public class MyBot extends TelegramLongPollingBot {
                     User user = userMap.get(chatId);
                     user.setName(message);
                     userMap.put(chatId, user);
-                    sendMessage.setText("Telefon raqamingizni kiriting:" +
-                            " namuna: 90 123 4567 \uD83D\uDCDE ");
+                    sendMessage.setText("Telefon raqamingizni ulashing \uD83D\uDCDE ");
                     name.put(chatId, 0);
-                    phone.put(chatId, 1);
-                }
-                else if (phone.size() != 0 && phone.get(chatId) == 1) {
-                    StringBuilder phoneNumber = new StringBuilder();
-                    for (int i = 0; i < message.length(); i++) {
-                        if (message.charAt(i) != ' ')
-                            phoneNumber.append(message.charAt(i));
-                    }
-                    if (phoneNumber.length() == 13 || phoneNumber.length() == 9) {
-                        int count = 0;
-                        for (int i = 0; i < phoneNumber.length(); i++) {
-                            if (phoneNumber.charAt(i) == '0'
-                                    || phoneNumber.charAt(i) == '1'
-                                    || phoneNumber.charAt(i) == '2'
-                                    || phoneNumber.charAt(i) == '3'
-                                    || phoneNumber.charAt(i) == '4'
-                                    || phoneNumber.charAt(i) == '5'
-                                    || phoneNumber.charAt(i) == '6'
-                                    || phoneNumber.charAt(i) == '7'
-                                    || phoneNumber.charAt(i) == '8'
-                                    || phoneNumber.charAt(i) == '9'
-                                    || phoneNumber.charAt(i) == '+'
-                            ) {
-                                count++;
-                            }
-                        }
-                        if (count == phoneNumber.length()) {
-                            Admin admin = connection.checkAdmin(message);
-                            if (admin.getPhoneNumber() == null) {
-                                User user = userMap.get(chatId);
-                                user.setPhoneNumber(message);
-                                userMap.put(chatId, user);
-                                sendMessage.setText("Holatingizni tanlang: \uD83D\uDD0D");
-                                sendMessage.setReplyMarkup(chooseTypeOfUser(resources));
-                            } else {
-                                adminList.put(chatId, admin);
-                                sendMessage.setText("Parolni kiriting: ");
-                            }
-                            phone.put(chatId, 0);
-                        } else {
-                            sendMessage.setText("Noto'g'ri formatdagi raqam kiritdingiz, iltimos qaytadan kiriting: ");
-                        }
-                    } else {
-                        sendMessage.setText("Noto'g'ri formatdagi raqam kiritdingiz, iltimos qaytadan kiriting: ");
-                    }
+                    sendMessage.setReplyMarkup(shareContact(Long.valueOf(chatId)));
                 }
                 else if (adName.size() != 0 && adName.get(chatId) == 1) {
                     Ads ads = new Ads();
@@ -310,6 +267,20 @@ public class MyBot extends TelegramLongPollingBot {
                     }
                 }
             }
+            else if (update.getMessage().hasContact()){
+                String phoneNumber = "+" + update.getMessage().getContact().getPhoneNumber();
+                Admin admin = connection.checkAdmin(phoneNumber);
+                if (admin.getPhoneNumber() == null) {
+                    User user = userMap.get(chatId);
+                    user.setPhoneNumber(phoneNumber);
+                    userMap.put(chatId, user);
+                    sendMessage.setText("Holatingizni tanlang: \uD83D\uDD0D");
+                    sendMessage.setReplyMarkup(chooseTypeOfUser(resources));
+                } else {
+                    adminList.put(chatId, admin);
+                    sendMessage.setText("Parolni kiriting: ");
+                }
+            }
             else {
                 if (adPhoto.size() != 0 && adPhoto.get(chatId).getDescription() != null) {
                     Ads ads = adPhoto.get(chatId);
@@ -377,11 +348,9 @@ public class MyBot extends TelegramLongPollingBot {
             else if (call_data.equals("Vaqtincha")) {
                 User user = userMap.get(String.valueOf(chat_id));
                 user.setWorkingType(call_data);
-                user.setEducationLevel("o'rta");
                 userMap.put(String.valueOf(chat_id), user);
-                new_message.setText("Yosh oraligini tanlang: \uD83D\uDD0D");
-                new_message.setReplyMarkup(chooseAge(resources));
-                age.put(String.valueOf(chat_id), 1);
+                new_message.setText("malumotni tanlang:\uD83C\uDF93");
+                new_message.setReplyMarkup(chooseLevelOfWorker(resources));
             }
             else if (call_data.equals("oliy") || call_data.equals("o'rta")) {
                 User user = userMap.get(String.valueOf(chat_id));
@@ -681,7 +650,7 @@ public class MyBot extends TelegramLongPollingBot {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setSelective(true);
         replyKeyboardMarkup.setResizeKeyboard(true);
-        replyKeyboardMarkup.setOneTimeKeyboard(false);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow keyboardFirstRow = new KeyboardRow();
         keyboardFirstRow.add("Boshlash");
@@ -1021,5 +990,29 @@ public class MyBot extends TelegramLongPollingBot {
         }
         sendDocument.setDocument(new InputFile(new File("C:\\Users\\Elitebook\\Desktop\\telegram_bot_amazon\\src\\main\\resources\\employees.xlsx")));
         return sendDocument;
+    }
+
+    public ReplyKeyboardMarkup shareContact(Long chat_id){
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+
+        // new list
+        List<KeyboardRow> keyboard = new ArrayList<>();
+
+        // first keyboard line
+        KeyboardRow keyboardFirstRow = new KeyboardRow();
+        KeyboardButton keyboardButton = new KeyboardButton();
+        keyboardButton.setText("Share your number >");
+        keyboardButton.setRequestContact(true);
+        keyboardFirstRow.add(keyboardButton);
+
+        // add array to list
+        keyboard.add(keyboardFirstRow);
+
+        // add list to our keyboard
+        replyKeyboardMarkup.setKeyboard(keyboard);
+        return replyKeyboardMarkup;
     }
 }
