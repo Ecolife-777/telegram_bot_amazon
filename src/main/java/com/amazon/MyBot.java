@@ -93,7 +93,7 @@ public class MyBot extends TelegramLongPollingBot {
                     sendMessage.setText("Barcha ish beruvchilar!");
                 }
                 else if (message.equals("barchaga reklama jonatish")) {
-                    sendMessage.setText("ochirmoqchi bolgan reklamangizni tanlang");
+                    sendMessage.setText("jo'xnatmoqchi bolgan reklamangizni tanlang");
                     InlineKeyboardMarkup ads = getAds();
                     sendMessage.setReplyMarkup(ads);
                 }
@@ -365,6 +365,8 @@ public class MyBot extends TelegramLongPollingBot {
                 user.setGender(call_data);
                 userMap.put(String.valueOf(chat_id), user);
                 User savedUser = userMap.get(String.valueOf(chat_id));
+                SendMessage sendMessage = new SendMessage();
+                sendMessage.setChatId(String.valueOf(chat_id));
                 if (savedUser.isStatus()) {
                     StringBuilder builder = new StringBuilder();
                     List<User> user1 = connection.getUser(savedUser);
@@ -373,10 +375,14 @@ public class MyBot extends TelegramLongPollingBot {
                     } else {
                         user1.forEach(user2 -> builder.append(user2).append("\n\n"));
                     }
-                    new_message.setText(builder.toString());
+                    new_message.setText("Natijalar:");
+                    sendMessage.setText(builder.toString());
                 } else {
-                    new_message.setText("Ro'yxatdan o'tganingiz bilan tabriklaymiz, Sizga ish beruvchilar qisqa muddatda aloqaga chiqishadi! ✅✅✅✅");
+                    new_message.setText("Ro'yxatdan o'tganingiz bilan tabriklaymiz, ");
+                    sendMessage.setText("Sizga ish beruvchilar qisqa muddatda aloqaga chiqishadi! ✅✅✅✅");
                 }
+                sendMessage.setReplyMarkup(startingBot());
+                execute(sendMessage);
                 connection.saveUser(savedUser);
                 gender.put(String.valueOf(chat_id), 0);
                 userMap.put(String.valueOf(chat_id), null);
@@ -1004,7 +1010,7 @@ public class MyBot extends TelegramLongPollingBot {
         // first keyboard line
         KeyboardRow keyboardFirstRow = new KeyboardRow();
         KeyboardButton keyboardButton = new KeyboardButton();
-        keyboardButton.setText("Share your number >");
+        keyboardButton.setText("Telefon raqam ulashish");
         keyboardButton.setRequestContact(true);
         keyboardFirstRow.add(keyboardButton);
 
