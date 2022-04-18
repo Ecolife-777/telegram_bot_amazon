@@ -18,6 +18,7 @@ public class User {
     private String gender;
     private String educationLevel;
     private String chatId;
+    private String experience;
 
     @Override
     public String toString() {
@@ -29,6 +30,7 @@ public class User {
                 +"ish turi: " + this.workingType + "\n"
                 +"yoshi: " + this.age + "\n"
                 +"jinsi: " + this.gender + "\n"
-                +"malumoti: " + this.educationLevel;
+                +"malumoti: " + this.educationLevel + "\n"
+                +"tajribasi: " + this.experience;
     }
 }

@@ -228,6 +228,7 @@ public class Resources {
             "Qibray tumani",
             "Quyi Chirchiq tumani",
             "Orta Chirchiq tumani",
+            "Toshkent tumani",
             "Yangiyo'l tumani",
             "Yuqori Chirchiq tumani",
             "Zangiota tumani"

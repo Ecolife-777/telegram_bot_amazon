@@ -71,8 +71,17 @@ public class MyBot extends TelegramLongPollingBot {
                 String message = update.getMessage().getText();
                 if (message.equals("/start")) {
                     sendMessage.setReplyMarkup(startingBot());
-                    sendMessage.setText("Assalomu alaykum, xush kelibsiz! ✅ " +
-                            "\n\uD83E\uDDFE botni boshlashdan oldin bot bilan tanishib chiqishingizni so'raymiz. ");
+                    sendMessage.setText("Assalomu alaykum, Ish bozori botiga xush kelibsiz! \uD83D\uDE4B\u200D♂️\n\n" +
+                            "\uD83E\uDDFE Botni boshlashdan oldin bot bilan tanishib chiqishingizni so'raymiz. " +
+                            "Siz ish bozori botga muvaffaqiyatli a'zo bo'ldingiz. " +
+                            "Mazkur bot orqali siz O'zbekiston bo'ylab ish berish yoki ish izlash imkoniyatiga ega bo'lasiz.  " +
+                            "O'ylaymizki sizning ezgu maqsadlaringiz uchun mazkur bot samarali yordamchingizga aylanadi. ✅️" +
+                            "\n\nBotdan foydalanishdan oldin quyidagilar bilib oling. ☝️" +
+                            "\n\n\uD83D\uDDE3 Diqqat: ️Bot orqali ish beruvchi va ish oluvchilar o'rtasida  muammolar " +
+                            "va ziddiyatlar kelib chiqsa biz javobgarlikni o'z zimmamizga olmaymiz. ❗️❗️❗️ \n" +
+                            "Quyidagi vaziyatlar sodir bo'lsa ish beruvchi va ish oluvchi o'zaro kelishib olishingiz shart. \uD83E\uDD1D " +
+                            "\n\nBarcha talablarga rozi bo'lsangiz botdan foydalanishingiz mumkin. ✅ " +
+                            " \n\n https://t.me/ishbozori_kanali");
                 }
                 else if (message.equals("Menu")) {
                     sendMessage.setReplyMarkup(adminMenu());
@@ -101,18 +110,7 @@ public class MyBot extends TelegramLongPollingBot {
                     sendMessage.setText("Tanlang:");
                     sendMessage.setReplyMarkup(adminEditMenu());
                 }
-                else if (message.equals("Bot qanday ishlaydi")) {
-                    sendMessage.setText("Assalomu alaykum.  " +
-                            "Siz ish bozori botga muvaffaqiyatli a'zo bo'ldingiz. " +
-                            "Mazkur bot orqali siz O'zbekiston bo'ylab ish berish yoki ish izlash imkoniyatiga ega bo'lasiz.  " +
-                            "O'ylaymizki sizning ezgu maqsadlaringiz uchun mazkur bot samarali yordamchingizga aylanadi. ✅️" +
-                            "\n\nBotdan foydalanishdan oldin quyidagilar bilib oling. ☝️" +
-                            "\n\n\uD83D\uDDE3 Diqqat: ️bot orqali ish beruvchi va ish oluvchilar o'rtasida  muammolar " +
-                            "kelib chiqsa biz javobgarlikni o'z zimmamizga olmaymiz. ❗️❗️❗️ " +
-                            "\n\nBarcha talablarga rozi bo'lsangiz botdan foydalanishingiz mumkin. ✅ " +
-                            " \n\n https://t.me/ishbozori_kanali");
-                }
-                else if (message.equals("Boshlash")) {
+                else if (message.equals("Roziman va boshlayman")) {
                     sendMessage.setText("Viloyatingizni tanlang \uD83C\uDFE0:  ");
                     sendMessage.setReplyMarkup(getRegions(resources));
                 }
@@ -155,7 +153,7 @@ public class MyBot extends TelegramLongPollingBot {
                         sendMessage.setText("muvaffaqiyatli ochirildi.");
                         deleteAd.put(chatId, 0);
                     } else {
-                        sendMessage.setText("bunday idli mavjud emas, iltimos qaytadan urinib koring");
+                        sendMessage.setText("bunday id mavjud emas, iltimos qaytadan urinib koring");
                     }
                 }
                 else if (addProfession.size() != 0 && addProfession.get(chatId) == 1) {
@@ -268,7 +266,11 @@ public class MyBot extends TelegramLongPollingBot {
                 }
             }
             else if (update.getMessage().hasContact()){
-                String phoneNumber = "+" + update.getMessage().getContact().getPhoneNumber();
+                String phoneNumber = update.getMessage().getContact().getPhoneNumber();
+                boolean contains = phoneNumber.contains("+");
+                if (!contains){
+                    phoneNumber = "+" + phoneNumber;
+                }
                 Admin admin = connection.checkAdmin(phoneNumber);
                 if (admin.getPhoneNumber() == null) {
                     User user = userMap.get(chatId);
@@ -341,9 +343,9 @@ public class MyBot extends TelegramLongPollingBot {
             else if (call_data.equals("18-30") || call_data.equals("30-45")) {
                 User user = userMap.get(String.valueOf(chat_id));
                 user.setAge(call_data);
-                userMap.put(String.valueOf(chat_id), user);
+                User put = userMap.put(String.valueOf(chat_id), user);
                 new_message.setText("jinsni tanlang: \uD83D\uDC6B");
-                new_message.setReplyMarkup(chooseGender(resources));
+                new_message.setReplyMarkup(chooseGender(put));
             }
             else if (call_data.equals("Vaqtincha")) {
                 User user = userMap.get(String.valueOf(chat_id));
@@ -355,6 +357,24 @@ public class MyBot extends TelegramLongPollingBot {
             else if (call_data.equals("oliy") || call_data.equals("o'rta")) {
                 User user = userMap.get(String.valueOf(chat_id));
                 user.setEducationLevel(call_data);
+                userMap.put(String.valueOf(chat_id), user);
+                if (userMap.get(String.valueOf(chat_id)).isStatus()){
+                    new_message.setText("Yosh oraligini tanlang: \uD83D\uDD0D");
+                    new_message.setReplyMarkup(chooseAge(resources));
+                    age.put(String.valueOf(chat_id), 1);
+                } else {
+                    new_message.setText("Ish tajribangizni tanlang: \uD83D\uDD0D");
+                    new_message.setReplyMarkup(chooseWorkExperience());
+                }
+            }
+            else if (call_data.equals("0")
+                    || call_data.equals("1")
+                    || call_data.equals("2")
+                    || call_data.equals("3")
+                    || call_data.equals("4")
+                    || call_data.equals("5+")){
+                User user = userMap.get(String.valueOf(chat_id));
+                user.setExperience(call_data);
                 userMap.put(String.valueOf(chat_id), user);
                 new_message.setText("Yosh oraligini tanlang: \uD83D\uDD0D");
                 new_message.setReplyMarkup(chooseAge(resources));
@@ -373,7 +393,12 @@ public class MyBot extends TelegramLongPollingBot {
                     if (user1.size() == 0) {
                         builder.append("Bu hududda siz izlagan kasbga ega shaxs hozirda registratsiyadan o'tmadi, keyinroq yana urinib ko'ring:");
                     } else {
-                        user1.forEach(user2 -> builder.append(user2).append("\n\n"));
+                        user1.forEach(user2 -> {
+                            if (user2.getExperience() == null){
+                                user2.setExperience("0");
+                            }
+                            builder.append(user2).append("\n\n");
+                        });
                     }
                     new_message.setText("Natijalar:");
                     sendMessage.setText(builder.toString());
@@ -381,6 +406,34 @@ public class MyBot extends TelegramLongPollingBot {
                     new_message.setText("Ro'yxatdan o'tganingiz bilan tabriklaymiz, ");
                     sendMessage.setText("Sizga ish beruvchilar qisqa muddatda aloqaga chiqishadi! ✅✅✅✅");
                 }
+                sendMessage.setReplyMarkup(startingBot());
+                execute(sendMessage);
+                connection.saveUser(savedUser);
+                gender.put(String.valueOf(chat_id), 0);
+                userMap.put(String.valueOf(chat_id), null);
+                ads(chat_id, 0);
+            }
+            else if (call_data.equals("Muhim emas")) {
+                User user = userMap.get(String.valueOf(chat_id));
+                user.setGender(call_data);
+                userMap.put(String.valueOf(chat_id), user);
+                User savedUser = userMap.get(String.valueOf(chat_id));
+                SendMessage sendMessage = new SendMessage();
+                sendMessage.setChatId(String.valueOf(chat_id));
+                StringBuilder builder = new StringBuilder();
+                List<User> user1 = connection.getAllUser(savedUser);
+                if (user1.size() == 0) {
+                        builder.append("Bu hududda siz izlagan kasbga ega shaxs hozirda registratsiyadan o'tmadi, keyinroq yana urinib ko'ring:");
+                } else {
+                        user1.forEach(user2 -> {
+                            if (user2.getExperience() == null){
+                                user2.setExperience("0");
+                            }
+                            builder.append(user2).append("\n\n");
+                        });
+                }
+                new_message.setText("Natijalar:");
+                sendMessage.setText(builder.toString());
                 sendMessage.setReplyMarkup(startingBot());
                 execute(sendMessage);
                 connection.saveUser(savedUser);
@@ -454,7 +507,7 @@ public class MyBot extends TelegramLongPollingBot {
                 User user = userMap.get(String.valueOf(chat_id));
                 user.setDistrict(call_data);
                 userMap.put(String.valueOf(chat_id), user);
-                new_message.setText("Ismingizni kiriting: \uD83D\uDD8A");
+                new_message.setText("Ism va familiya kiriting: \uD83D\uDD8A");
                 name.put(String.valueOf(chat_id), 1);
             }
             execute(new_message);
@@ -659,8 +712,7 @@ public class MyBot extends TelegramLongPollingBot {
         replyKeyboardMarkup.setOneTimeKeyboard(true);
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow keyboardFirstRow = new KeyboardRow();
-        keyboardFirstRow.add("Boshlash");
-        keyboardFirstRow.add("Bot qanday ishlaydi");
+        keyboardFirstRow.add("Roziman va boshlayman");
         keyboard.add(keyboardFirstRow);
         replyKeyboardMarkup.setKeyboard(keyboard);
         return replyKeyboardMarkup;
@@ -834,6 +886,50 @@ public class MyBot extends TelegramLongPollingBot {
         return inlineKeyboardMarkup;
     }
 
+    public InlineKeyboardMarkup chooseWorkExperience() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        List<List<InlineKeyboardButton>> inlineKeyboardButtons = new ArrayList<>();
+
+        List<InlineKeyboardButton> keyboardButtons = new ArrayList<>();
+
+        InlineKeyboardButton keyboardButton = new InlineKeyboardButton();
+        keyboardButton.setText("0");
+        keyboardButton.setCallbackData("0");
+
+        InlineKeyboardButton keyboardButton1 = new InlineKeyboardButton();
+        keyboardButton1.setText("1");
+        keyboardButton1.setCallbackData("1");
+
+        InlineKeyboardButton keyboardButton2 = new InlineKeyboardButton();
+        keyboardButton2.setText("2");
+        keyboardButton2.setCallbackData("2");
+
+        InlineKeyboardButton keyboardButton3 = new InlineKeyboardButton();
+        keyboardButton3.setText("3");
+        keyboardButton3.setCallbackData("3");
+
+        InlineKeyboardButton keyboardButton4 = new InlineKeyboardButton();
+        keyboardButton4.setText("4");
+        keyboardButton4.setCallbackData("4");
+
+        InlineKeyboardButton keyboardButton5 = new InlineKeyboardButton();
+        keyboardButton5.setText("5+");
+        keyboardButton5.setCallbackData("5+");
+
+        keyboardButtons.add(keyboardButton);
+        keyboardButtons.add(keyboardButton1);
+        keyboardButtons.add(keyboardButton2);
+        keyboardButtons.add(keyboardButton3);
+        keyboardButtons.add(keyboardButton4);
+        keyboardButtons.add(keyboardButton5);
+
+        inlineKeyboardButtons.add(keyboardButtons);
+
+        inlineKeyboardMarkup.setKeyboard(inlineKeyboardButtons);
+        return inlineKeyboardMarkup;
+    }
+
     public InlineKeyboardMarkup chooseLevelOfWorker(Resources resources) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
@@ -858,7 +954,7 @@ public class MyBot extends TelegramLongPollingBot {
         return inlineKeyboardMarkup;
     }
 
-    public InlineKeyboardMarkup chooseGender(Resources resources) {
+    public InlineKeyboardMarkup chooseGender(User user) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         List<List<InlineKeyboardButton>> inlineKeyboardButtons = new ArrayList<>();
@@ -872,9 +968,15 @@ public class MyBot extends TelegramLongPollingBot {
         InlineKeyboardButton keyboardButton1 = new InlineKeyboardButton();
         keyboardButton1.setText("Ayol");
         keyboardButton1.setCallbackData("Ayol");
-
         keyboardButtons.add(keyboardButton);
         keyboardButtons.add(keyboardButton1);
+
+        if (user.isStatus()) {
+            InlineKeyboardButton keyboardButton2 = new InlineKeyboardButton();
+            keyboardButton2.setText("Muhim emas");
+            keyboardButton2.setCallbackData("Muhim emas");
+            keyboardButtons.add(keyboardButton2);
+        }
 
         inlineKeyboardButtons.add(keyboardButtons);
 
