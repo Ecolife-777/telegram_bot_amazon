@@ -14,7 +14,6 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -23,8 +22,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.Channel;
-import java.nio.channels.Channels;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -35,6 +32,7 @@ public class MyBot extends TelegramLongPollingBot {
     Map<String, Integer> phone = new HashMap<>();
     Map<String, Admin> adminList = new HashMap<>();
     Map<String, Integer> age = new HashMap<>();
+    Map<String, Integer> ageStatus = new HashMap<>();
     Map<String, Integer> gender = new HashMap<>();
     Map<String, User> userMap = new HashMap<>();
     Map<String, Integer> adDescription = new HashMap<>();
@@ -264,6 +262,13 @@ public class MyBot extends TelegramLongPollingBot {
                         sendMessage.setText("Noto'g'ri formatdagi raqam kiritdingiz, iltimos qaytadan kiriting: ");
                     }
                 }
+                else if (age.size() != 0 && age.get(chatId) == 1){
+                    User user = userMap.get(chatId);
+                    user.setAge(message);
+                    User put = userMap.put(chatId, user);
+                    sendMessage.setText("jinsni tanlang: \uD83D\uDC6B");
+                    sendMessage.setReplyMarkup(chooseGender(put));
+                }
             }
             else if (update.getMessage().hasContact()){
                 String phoneNumber = update.getMessage().getContact().getPhoneNumber();
@@ -291,7 +296,7 @@ public class MyBot extends TelegramLongPollingBot {
                     sendMessage.setText("reklamangiz muvoffaqiyatli joylandi");
                     adPhoto.put(chatId, new Ads());
                 } else {
-                    sendMessage.setText("You need to start over!");
+                    sendMessage.setText("Notogri turdagi malumot kiritdingiz, qaytadan urunib koring!");
                 }
             }
             execute(sendMessage);
@@ -359,9 +364,9 @@ public class MyBot extends TelegramLongPollingBot {
                 user.setEducationLevel(call_data);
                 userMap.put(String.valueOf(chat_id), user);
                 if (userMap.get(String.valueOf(chat_id)).isStatus()){
-                    new_message.setText("Yosh oraligini tanlang: \uD83D\uDD0D");
-                    new_message.setReplyMarkup(chooseAge(resources));
-                    age.put(String.valueOf(chat_id), 1);
+                    User user1 = userMap.get(String.valueOf(chat_id));
+                    new_message.setText("jinsni tanlang: \uD83D\uDD0D");
+                    new_message.setReplyMarkup(chooseGender(user1));
                 } else {
                     new_message.setText("Ish tajribangizni tanlang: \uD83D\uDD0D");
                     new_message.setReplyMarkup(chooseWorkExperience());
@@ -376,8 +381,8 @@ public class MyBot extends TelegramLongPollingBot {
                 User user = userMap.get(String.valueOf(chat_id));
                 user.setExperience(call_data);
                 userMap.put(String.valueOf(chat_id), user);
-                new_message.setText("Yosh oraligini tanlang: \uD83D\uDD0D");
-                new_message.setReplyMarkup(chooseAge(resources));
+                new_message.setText("Yoshingini kiriting: \uD83D\uDD0D");
+//                new_message.setReplyMarkup(chooseAge(resources));
                 age.put(String.valueOf(chat_id), 1);
             }
             else if (call_data.equals("Erkak") || call_data.equals("Ayol")) {
@@ -403,10 +408,10 @@ public class MyBot extends TelegramLongPollingBot {
                     new_message.setText("Natijalar:");
                     sendMessage.setText(builder.toString());
                 } else {
-                    new_message.setText("Ro'yxatdan o'tganingiz bilan tabriklaymiz, ");
-                    sendMessage.setText("Sizga ish beruvchilar qisqa muddatda aloqaga chiqishadi! ✅✅✅✅");
+                    new_message.setText("Siz muvaffaqiyatli ro'yxatdan o'tdingiz, ");
+                    sendMessage.setText("Sizga ish beruvchilar aloqaga chiqishadi! ✅✅✅✅");
                 }
-                sendMessage.setReplyMarkup(startingBot());
+                sendMessage.setReplyMarkup(startingBotMenu());
                 execute(sendMessage);
                 connection.saveUser(savedUser);
                 gender.put(String.valueOf(chat_id), 0);
@@ -434,7 +439,7 @@ public class MyBot extends TelegramLongPollingBot {
                 }
                 new_message.setText("Natijalar:");
                 sendMessage.setText(builder.toString());
-                sendMessage.setReplyMarkup(startingBot());
+                sendMessage.setReplyMarkup(startingBotMenu());
                 execute(sendMessage);
                 connection.saveUser(savedUser);
                 gender.put(String.valueOf(chat_id), 0);
@@ -713,6 +718,19 @@ public class MyBot extends TelegramLongPollingBot {
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow keyboardFirstRow = new KeyboardRow();
         keyboardFirstRow.add("Roziman va boshlayman");
+        keyboard.add(keyboardFirstRow);
+        replyKeyboardMarkup.setKeyboard(keyboard);
+        return replyKeyboardMarkup;
+    }
+
+    public ReplyKeyboardMarkup startingBotMenu() {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow keyboardFirstRow = new KeyboardRow();
+        keyboardFirstRow.add("Bosh menu");
         keyboard.add(keyboardFirstRow);
         replyKeyboardMarkup.setKeyboard(keyboard);
         return replyKeyboardMarkup;

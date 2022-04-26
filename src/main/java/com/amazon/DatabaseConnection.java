@@ -40,7 +40,7 @@ public class DatabaseConnection {
         Connection connection = DriverManager.getConnection(url, username, password);
         String query = "select * from users u where u.status = false and u.district = '" + user.getDistrict()
                 + "' and u.profession = '" + user.getProfession() + "' and u.gender = '"
-                + user.getGender() + "' and u.age = '" + user.getAge() + "' order by created_date desc;";
+                + user.getGender() + "' order by created_date desc;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         List<User> users = new ArrayList<>();
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -66,7 +66,7 @@ public class DatabaseConnection {
         Connection connection = DriverManager.getConnection(url, username, password);
         String query = "select * from users u where u.status = false and u.district = '" + user.getDistrict()
                 + "' and u.profession = '" + user.getProfession()
-                + "' and u.age = '" + user.getAge() + "' order by created_date desc;";
+                + "' order by created_date desc;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         List<User> users = new ArrayList<>();
         ResultSet resultSet = preparedStatement.executeQuery();
